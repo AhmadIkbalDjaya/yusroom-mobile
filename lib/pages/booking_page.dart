@@ -1,31 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:yusroom_mobile/api/booking_service.dart';
 import 'package:yusroom_mobile/components/time_box.dart';
+import 'package:yusroom_mobile/model/room_model.dart';
+import 'package:yusroom_mobile/model/time_model.dart';
 
-class BookingPage extends StatelessWidget {
-  const BookingPage({super.key});
+class BookingPage extends StatefulWidget {
+  const BookingPage({super.key, required this.roomId});
+  final String roomId;
+
+  @override
+  State<BookingPage> createState() => _BookingPageState();
+}
+
+class _BookingPageState extends State<BookingPage> {
+  final bookingService = BookingService();
+  Room room = Room();
+  List<Time> times = [];
+  
+
+  Future<dynamic> fetchRoom() async {
+    try {
+      Room fetchRoom = await bookingService.getRoom(widget.roomId);
+      setState(() {
+        room = fetchRoom;
+      });
+    } catch (e) {
+      throw Exception("Failed to fetch data: $e");
+    }
+  }
+
+  Future<dynamic> fetchTime() async {
+    try {
+      List<Time> fetchTime = await bookingService.getRoomTime(widget.roomId);
+      setState(() {
+        times = fetchTime;
+      });
+    } catch (e) {
+      throw Exception("Failed to fetch data: $e");
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchRoom();
+    fetchTime();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
         children: [
-          Stack(
-            children: [
-              Container(
-                color: Colors.grey,
-                height: 240,
-              ),
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
+          room.image != null
+              ? Stack(
+                  children: [
+                    Image.network(
+                      "${room.image}",
+                      height: 240,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                )
+              : const SizedBox(),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             margin: const EdgeInsets.only(bottom: 25),
@@ -33,26 +81,24 @@ class BookingPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Meeting Room 1",
-                  style: TextStyle(
+                  "${room.name}",
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  "Description Description Description",
-                  style: TextStyle(
+                  "${room.description}",
+                  style: const TextStyle(
                     color: Colors.grey,
                   ),
                 ),
               ],
             ),
           ),
-          Divider(
-            thickness: 5,
-          ),
-          Text(
+          const Divider(thickness: 5),
+          const Text(
             "Pilih Jadwal",
             style: TextStyle(
               fontSize: 18,
@@ -62,24 +108,21 @@ class BookingPage extends StatelessWidget {
           ),
           Column(
             children: [
-              Divider(),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    TimeBox(),
-                    TimeBox(),
-                    TimeBox(),
-                    TimeBox(),
-                    TimeBox(),
-                    TimeBox(),
-                    TimeBox(),
-                    TimeBox(),
-                    TimeBox(),
-                  ],
+              const Divider(),
+              SizedBox(
+                height: 38,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: times.map(
+                      (time) {
+                        return TimeBox(time: time);
+                      },
+                    ).toList(),
+                  ),
                 ),
               ),
-              Divider(),
+              const Divider(),
             ],
           ),
           Padding(

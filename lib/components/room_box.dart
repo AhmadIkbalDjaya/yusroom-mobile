@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:yusroom_mobile/model/room_model.dart';
 import 'package:yusroom_mobile/pages/booking_page.dart';
 
 class RoomBox extends StatelessWidget {
-  const RoomBox({
-    super.key,
-  });
+  const RoomBox({super.key, required this.room});
+  final Room room;
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class RoomBox extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => BookingPage(),
+            builder: (context) => BookingPage(roomId: "${room.id}"),
           ),
         );
       },
@@ -33,10 +33,11 @@ class RoomBox extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              color: Colors.grey,
+            Image.network(
+              "${room.image}",
+              fit: BoxFit.cover,
               height: 200,
-              // child: Image.network("sdad"),
+              width: double.infinity,
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -44,14 +45,14 @@ class RoomBox extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Meeting Room 2",
+                    "${room.name}",
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    "Ruang Meeting",
+                    "${room.description}",
                     style: TextStyle(
                       color: Colors.grey,
                     ),

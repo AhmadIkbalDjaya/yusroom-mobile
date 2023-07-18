@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:yusroom_mobile/model/time_model.dart';
 
 class TimeBox extends StatelessWidget {
-  const TimeBox({
-    super.key,
-  });
+  const TimeBox({super.key, required this.time});
+  final Time time;
 
   @override
   Widget build(BuildContext context) {
@@ -20,15 +20,15 @@ class TimeBox extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            "08:00",
-            style: TextStyle(
+            "${time.startTime}",
+            style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
             ),
           ),
           Text(
-            "09:00",
-            style: TextStyle(
+            "${time.endTime}",
+            style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
             ),
