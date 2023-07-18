@@ -51,12 +51,16 @@ class _BookingPageState extends State<BookingPage> {
     String descriptionData = descriptionController.text;
 
     try {
-      var result = await bookingService.booking(
+      await bookingService.booking(
           roomIdData, startTimeData, endTimeData, descriptionData);
-      return true;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MyBookingPage(),
+        ),
+      );
     } catch (e) {
       throw Exception("Failed Fetch Data");
-      // return false;
     }
   }
 
@@ -205,13 +209,7 @@ class _BookingPageState extends State<BookingPage> {
                 const SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: () {
-                    var result = booking();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MyBookingPage(),
-                      ),
-                    );
+                    booking();
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 35),
