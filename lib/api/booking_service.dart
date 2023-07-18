@@ -40,4 +40,26 @@ class BookingService {
       throw Exception("Failed to fetch data");
     }
   }
+
+  Future<dynamic> booking(String roomId, String startTime, String endTime,
+      String description) async {
+    var url = Uri.parse("${Constants.apiUrl}/booking");
+    var bodyPost = {
+      "room_id": roomId,
+      "start_time": startTime,
+      "end_time": endTime,
+      "description": description
+    };
+    var response = await http.post(url, body: bodyPost, headers: {
+      HttpHeaders.acceptHeader: "application/json",
+      HttpHeaders.authorizationHeader:
+          "Bearer 153|q8oADO0WBQNVnCLVHHnQwjmAYSFXq2H7KNXNLJsO"
+    });
+    print(response.body);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

@@ -3,6 +3,7 @@ import 'package:yusroom_mobile/api/booking_service.dart';
 import 'package:yusroom_mobile/components/time_box.dart';
 import 'package:yusroom_mobile/model/room_model.dart';
 import 'package:yusroom_mobile/model/time_model.dart';
+import 'package:yusroom_mobile/pages/my_booking_page.dart';
 
 class BookingPage extends StatefulWidget {
   const BookingPage({super.key, required this.roomId});
@@ -16,7 +17,10 @@ class _BookingPageState extends State<BookingPage> {
   final bookingService = BookingService();
   Room room = Room();
   List<Time> times = [];
-  
+  // late String startTime;
+  // late String endTime;
+  Time selectTime = Time();
+  final descriptionController = TextEditingController();
 
   Future<dynamic> fetchRoom() async {
     try {
@@ -37,6 +41,22 @@ class _BookingPageState extends State<BookingPage> {
       });
     } catch (e) {
       throw Exception("Failed to fetch data: $e");
+    }
+  }
+
+  Future<dynamic> booking() async {
+    String roomIdData = widget.roomId;
+    String startTimeData = selectTime.startTime.toString();
+    String endTimeData = selectTime.endTime.toString();
+    String descriptionData = descriptionController.text;
+
+    try {
+      var result = await bookingService.booking(
+          roomIdData, startTimeData, endTimeData, descriptionData);
+      return true;
+    } catch (e) {
+      throw Exception("Failed Fetch Data");
+      // return false;
     }
   }
 
@@ -116,7 +136,41 @@ class _BookingPageState extends State<BookingPage> {
                   child: Row(
                     children: times.map(
                       (time) {
-                        return TimeBox(time: time);
+                        return Stack(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                if (time.isBooking != true) {
+                                  setState(() {
+                                    selectTime = time;
+                                  });
+                                }
+                              },
+                              child: TimeBox(time: time),
+                            ),
+                            selectTime.id == time.id
+                                ? Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    width: 90,
+                                    height: 100,
+                                    color: Colors.yellow.withOpacity(.3),
+                                  )
+                                : const SizedBox(),
+                            time.isBooking == true
+                                ? Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    width: 90,
+                                    height: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(.7),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                  )
+                                : const SizedBox(),
+                          ],
+                        );
                       },
                     ).toList(),
                   ),
@@ -130,28 +184,37 @@ class _BookingPageState extends State<BookingPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   "Deskripsi Booking",
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 SizedBox(
                   height: 35,
                   child: TextField(
-                    decoration: InputDecoration(
+                    controller: descriptionController,
+                    decoration: const InputDecoration(
                       contentPadding: EdgeInsets.symmetric(horizontal: 10),
                       border: OutlineInputBorder(),
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    var result = booking();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MyBookingPage(),
+                      ),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
-                    minimumSize: Size(double.infinity, 35),
+                    minimumSize: const Size(double.infinity, 35),
                   ),
                   child: const Text("Booking"),
                 ),
