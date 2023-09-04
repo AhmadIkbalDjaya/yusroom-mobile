@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:yusroom_mobile/model/booking_model.dart';
 import 'package:yusroom_mobile/model/room_model.dart';
 import 'package:yusroom_mobile/model/time_model.dart';
 import 'package:yusroom_mobile/utils/constants.dart';
@@ -12,7 +13,7 @@ class BookingService {
     var response = await http.get(url, headers: {
       HttpHeaders.acceptHeader: "application/json",
       HttpHeaders.authorizationHeader:
-          "Bearer 153|q8oADO0WBQNVnCLVHHnQwjmAYSFXq2H7KNXNLJsO"
+          "Bearer 32|GiI34OwS0X4pYVC8DrQxaFkbes6b48QUlGQQX2SF"
     });
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);
@@ -29,7 +30,7 @@ class BookingService {
     var response = await http.get(url, headers: {
       HttpHeaders.acceptHeader: "application/json",
       HttpHeaders.authorizationHeader:
-          "Bearer 153|q8oADO0WBQNVnCLVHHnQwjmAYSFXq2H7KNXNLJsO"
+          "Bearer 32|GiI34OwS0X4pYVC8DrQxaFkbes6b48QUlGQQX2SF"
     });
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);
@@ -53,12 +54,46 @@ class BookingService {
     var response = await http.post(url, body: bodyPost, headers: {
       HttpHeaders.acceptHeader: "application/json",
       HttpHeaders.authorizationHeader:
-          "Bearer 153|q8oADO0WBQNVnCLVHHnQwjmAYSFXq2H7KNXNLJsO"
+          "Bearer 32|GiI34OwS0X4pYVC8DrQxaFkbes6b48QUlGQQX2SF"
     });
-    print(response.body);
     if (response.statusCode == 201) {
       return true;
     } else {
+      return false;
+    }
+  }
+
+  Future<dynamic> getUserBooking() async {
+    var url = Uri.parse("${Constants.apiUrl}/myBooking");
+    try {
+      var response = await http.get(url, headers: {
+        HttpHeaders.acceptHeader: "application/json",
+        HttpHeaders.authorizationHeader:
+            "Bearer 32|GiI34OwS0X4pYVC8DrQxaFkbes6b48QUlGQQX2SF",
+      });
+      if (response.statusCode == 200) {
+        var jsonData = jsonDecode(response.body);
+        var bookingList = jsonData["data"] as List<dynamic>;
+        var bookings = bookingList.map((e) => Booking.fromJson(e)).toList();
+        return bookings;
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic> deleteBooking(bookingId) async {
+    var url = Uri.parse("${Constants.apiUrl}/booking/$bookingId");
+    try {
+      var response = await http.delete(url, headers: {
+        HttpHeaders.acceptHeader: "application/json",
+        HttpHeaders.authorizationHeader:
+            "Bearer 32|GiI34OwS0X4pYVC8DrQxaFkbes6b48QUlGQQX2SF",
+      });
+      if (response.statusCode == 200) {
+        return true;
+      }
+    } catch (e) {
       return false;
     }
   }

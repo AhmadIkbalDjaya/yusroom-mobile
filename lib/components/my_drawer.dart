@@ -20,7 +20,7 @@ class MyDrawer extends StatelessWidget {
             child: Column(
               children: [
                 Expanded(child: Container()),
-                Row(
+                const Row(
                   children: [
                     CircleAvatar(
                       radius: 25,
@@ -59,11 +59,11 @@ class MyDrawer extends StatelessWidget {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HomePage(),
+                        builder: (context) => const HomePage(),
                       ),
                     );
                   },
-                  child: Row(
+                  child: const Row(
                     children: [
                       Icon(
                         Icons.home_rounded,
@@ -74,17 +74,17 @@ class MyDrawer extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 GestureDetector(
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MyBookingPage(),
+                        builder: (context) => const MyBookingPage(),
                       ),
                     );
                   },
-                  child: Row(
+                  child: const Row(
                     children: [
                       Icon(
                         Icons.meeting_room,
@@ -95,17 +95,17 @@ class MyDrawer extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 GestureDetector(
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ProfilePage(),
+                        builder: (context) => const ProfilePage(),
                       ),
                     );
                   },
-                  child: Row(
+                  child: const Row(
                     children: [
                       Icon(
                         Icons.logout,

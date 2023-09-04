@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:yusroom_mobile/api/booking_service.dart';
+import 'package:yusroom_mobile/model/booking_model.dart';
 
 class BookingBox extends StatelessWidget {
-  const BookingBox({
-    super.key,
-  });
+  BookingBox({super.key, required this.booking, required this.fetchBooking});
+  final Booking booking;
+  final Function fetchBooking;
+  final bookingService = BookingService();
+
+  Future<dynamic> deleteBooking(String id) async {
+    await bookingService.deleteBooking(id);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +33,12 @@ class BookingBox extends StatelessWidget {
           Container(
             color: Colors.grey,
             height: 200,
-            // child: Image.network("sdad"),
+            child: Image.network(
+              "${booking.roomImage}",
+              fit: BoxFit.cover,
+              height: 200,
+              width: double.infinity,
+            ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -34,15 +46,15 @@ class BookingBox extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Meeting Room 2",
-                  style: TextStyle(
+                  "${booking.roomName}",
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  "Rapat Rutin Yustech",
-                  style: TextStyle(
+                  "${booking.description}",
+                  style: const TextStyle(
                     color: Colors.grey,
                   ),
                 ),
@@ -60,8 +72,8 @@ class BookingBox extends StatelessWidget {
                         borderRadius: BorderRadius.circular(5),
                       ),
                       child: Text(
-                        "08:00 - 09:00",
-                        style: TextStyle(
+                        "${booking.startTime} - ${booking.endTime}",
+                        style: const TextStyle(
                           fontSize: 16,
                         ),
                       ),
@@ -74,26 +86,39 @@ class BookingBox extends StatelessWidget {
                             vertical: 5,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.amberAccent,
+                            color: booking.isApproved == "1"
+                                ? Colors.green
+                                : (booking.isApproved == "0"
+                                    ? Colors.red
+                                    : Colors.amber),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: Text(
-                            "Pending",
-                            style: TextStyle(
+                            booking.isApproved == "1"
+                                ? "Disetujui"
+                                : (booking.isApproved == "0"
+                                    ? "Ditolak"
+                                    : "Pending"),
+                            style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.delete,
-                            color: Colors.redAccent,
-                          ),
-                        ),
+                        booking.isApproved != "1"
+                            ? IconButton(
+                                onPressed: () {
+                                  deleteBooking(booking.id.toString());
+                                  fetchBooking();
+                                },
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.redAccent,
+                                ),
+                              )
+                            : const SizedBox(),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ],

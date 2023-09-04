@@ -46,14 +46,14 @@ class RoomBox extends StatelessWidget {
                 children: [
                   Text(
                     "${room.name}",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
                     "${room.description}",
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.grey,
                     ),
                   ),
